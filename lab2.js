@@ -9,9 +9,7 @@ var windowHalfY = window.innerHeight / 2;
 var sceneRoot = new THREE.Group();
 var viewRoot = new THREE.Group();
 
-var sunOrbit = new THREE.Group();
 var sunSpin = new THREE.Group();
-//var sunTrans = new Three.group();
 
 var earthOrbit = new THREE.Group();
 var earthSpin = new THREE.Group();
@@ -26,6 +24,8 @@ var saturnSpin = new THREE.Group();
 var saturnTrans = new THREE.Group();
 
 var earthMesh, moonMesh, sunMesh, saturnMesh;
+const light = new THREE.PointLight(0xff0000, 1, 100 );
+const amLight = new THREE.AmbientLight( 0x202020 );
 
 var animation = true;
 
@@ -48,6 +48,10 @@ function createSceneGraph() {
 
     // Top-level node
     scene.add(sceneRoot);
+
+    //LIGHTS
+    scene.add(light);
+    scene.add(amLight);
 
     //main node
     sceneRoot.add(viewRoot);
@@ -73,6 +77,8 @@ function createSceneGraph() {
     saturnOrbit.add(saturnTrans);
     saturnTrans.add(saturnSpin);
     saturnSpin.add(saturnMesh);
+
+
 }
 
 function init() {
@@ -82,12 +88,11 @@ function init() {
     camera.position.z = 5;
     
     var texloader = new THREE.TextureLoader();
-    
-    // Earth mesh
-	//var geometryEarth = new THREE.BoxGeometry(1, 1, 1, 8, 8, 8);    
 
+    //Geometry & material
     var geometryEarth = new THREE.SphereGeometry(1,32, 16, 0);
-    var materialEarth = new THREE.MeshBasicMaterial();
+    //var materialEarth = new THREE.MeshLambertMaterial();
+    var materialEarth = new THREE.MeshPhongMaterial();
 
     materialEarth.combine = 0;
     materialEarth.needsUpdate = true;
@@ -101,12 +106,9 @@ function init() {
 
     var geometrySaturn = new THREE.SphereGeometry(1,32,16,0);
     var materialSaturn = new THREE.MeshBasicMaterial();
+    //
 
-    //
-    // Task 2: uncommenting the following two lines requires you to run this example with a (local) webserver
-    // see https://threejs.org/docs/#manual/en/introduction/How-to-run-things-locally
-    //
-    
+    //TEXTURES
 	const earthTexture = texloader.load('tex/2k_earth_daymap.jpg');
     materialEarth.map = earthTexture;
 
@@ -118,10 +120,10 @@ function init() {
 
     const saturnTexture = texloader.load('tex/2k_saturn.jpg');
     materialSaturn.map = saturnTexture;
-    
+    //
     
     // Task 8: material using custom Vertex Shader and Fragment Shader
-    /*
+    
 	var uniforms = THREE.UniformsUtils.merge( [
 	    { 
 	    	colorTexture : { value : new THREE.Texture() },
@@ -140,25 +142,29 @@ function init() {
 	
 	const specularMap = texloader.load('tex/2k_earth_specular_map.jpg');
 	shaderMaterial.uniforms.specularMap.value = specularMap;
-	*/
+	
+    //
 
-    earthMesh = new THREE.Mesh(geometryEarth, materialEarth);
-    earthMesh.rotation.z = 23.44 * Math.PI / 180;
-    //earthMesh.position.set(10,0,0)
+    // MESH
+    earthMesh = new THREE.Mesh(geometryEarth, shaderMaterial);
+    earthMesh.rotation.x = 23.44 * Math.PI / 180;
     earthMesh.scale.set(0.8,0.8,0.8);
 
     moonMesh = new THREE.Mesh(geometryMoon, materialMoon);
-    //moonMesh.position.set(5,0,0);
     moonMesh.rotation.z = 5.15 * Math.PI / 100;
     moonMesh.scale.set(0.2, 0.2, 0.2);
 
     sunMesh = new THREE.Mesh(geometrySun, materialSun);
-    //sunMesh.position.set(0,0,0);
 
     saturnMesh = new THREE.Mesh(geometrySaturn, materialSaturn);
-    //saturnMesh.position.set(20,0,0);
+    //
 
+    //LIGHTS
+    light.position.set(0,0,0);
+    light.castShadow = true;
+    //
 
+    //Call scene graph
     createSceneGraph();
 
     renderer = new THREE.WebGLRenderer();
@@ -184,9 +190,7 @@ function init() {
     });
 }
 
-var axis = new THREE.Vector3(4, 0, 7).normalize();
-var speed = 0.01;
-
+earthSpin.rotation.x = 0.4;
 function render() {
     // Set up the camera
     camera.position.x = mouseX * 10;
@@ -199,17 +203,17 @@ function render() {
         sunSpin.rotation.y += 0.1/25; //sun spin on its own axis
         earthOrbit.rotation.y += 0.1 / 365; //earth orbits the sun 
 
-        earthSpin.rotation.y += 0.1 / 15; //earth spin its own axis
+        earthSpin.rotation.y += 0.1 ; //earth spin its own axis
 
         moonOrbit.rotation.y += 0.1 / 27.3; //moon orbits the earth
         //moonSpin.rotation.y += 0.1 / 27.3; //moon spins its own axis
 
-        saturnOrbit.rotation.y += 0.1 / (365 * 16);
+        saturnOrbit.rotation.y += 0.1 / (365 * 29.5);
         saturnSpin.rotation.y += 0.1 / 35;
 
         earthTrans.position.x = 7; //move earth position
         moonTrans.position.x = 3; //move moon position
-        saturnTrans.position.x = 15;
+        saturnTrans.position.x = 15; //move saturn position
         
     }
 
