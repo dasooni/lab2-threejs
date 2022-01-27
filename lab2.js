@@ -147,11 +147,10 @@ function init() {
 
     // MESH
     earthMesh = new THREE.Mesh(geometryEarth, shaderMaterial);
-    earthMesh.rotation.x = 23.44 * Math.PI / 180;
     earthMesh.scale.set(0.8,0.8,0.8);
 
     moonMesh = new THREE.Mesh(geometryMoon, materialMoon);
-    moonMesh.rotation.z = 5.15 * Math.PI / 100;
+    moonMesh.rotation.z = 5.15 * Math.PI / 180;
     moonMesh.scale.set(0.2, 0.2, 0.2);
 
     sunMesh = new THREE.Mesh(geometrySun, materialSun);
@@ -190,7 +189,8 @@ function init() {
     });
 }
 
-earthSpin.rotation.x = 0.4;
+earthSpin.rotation.x = 23.44 * Math.PI / 180;
+
 function render() {
     // Set up the camera
     camera.position.x = mouseX * 10;
