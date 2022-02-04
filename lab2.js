@@ -1,3 +1,7 @@
+/*
+Dasmit Sethi, VT22
+*/
+
 var container;
 var camera, scene, renderer;
 var mouseX = 0,
