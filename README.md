@@ -1,3 +1,1 @@
-# TNM061-lab2-threejs
-
-zzzzzzz
+basic solar system in three.js
